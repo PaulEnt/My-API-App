@@ -1,25 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+const App = () => {
+  const [item, setItem] = useState("");
 
-function App() {
+  const getData = async () => {
+    let response = await fetch("https://api.punkapi.com/v2/beers/random");
+    let data = await response.json();
+    setItem(data[0]);
+  };
+  useEffect(() => {
+    getData();
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>{item.name}</h1>
+      {item ? (
+        item.food_pairing.map((food, index) => {
+          return <Food food={food} />;
+        })
+      ) : (
+        <p>loading...</p>
+      )}
+      <button onClick={getData}>get data</button>
     </div>
   );
-}
+};
+
+const Food = ({ food }) => {
+  return (
+    <div>
+      <h1>{food}</h1>
+    </div>
+  );
+};
 
 export default App;
